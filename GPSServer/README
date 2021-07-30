@@ -1,0 +1,4 @@
+# How to install the Server
+- Open your Terminal and navigate to the folder where the GPS Server code is
+- Run `c++ main.cpp MapCreator.cpp -o main` to build the code
+- Run `./main` to run the server

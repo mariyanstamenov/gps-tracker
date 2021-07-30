@@ -1,0 +1,5 @@
+# How to install the code on the Microcontroller
+- You need Arduino Software
+- Load the Code in Arduino Software and connect your device to your computer
+- Press the button on the top left to upload the code on the microcontroller
+- Have fun.

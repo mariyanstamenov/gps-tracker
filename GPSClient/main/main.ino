@@ -34,6 +34,15 @@ float latitude, longitude;
 
 int year, month, date, hour, minute, second;
 
+struct Package {
+  String lat = "";
+  String lng = "";
+  String time = "2:0:0";
+  String date = "0.0.2000";
+};
+
+struct Package prevPackage;
+
 void startingDevice() {
   Serial.println("Starting device");
   display.display();
@@ -123,6 +132,7 @@ void setup() {
 void loop() {
   while (ss.available() > 0) {
     if (gps.encode(ss.read())) {
+      Serial.println(String(gps.location.lat()) + "\n");
       if (gps.location.isValid()) {
         latitude = gps.location.lat();
         lat_str = String(latitude, 5);
@@ -155,8 +165,14 @@ void loop() {
       sendGPSDataToDisplay(message);
       sendGPSDataToWebserver();
       printGPSDataInSerial(gps);
-      
-      sendUDP();
+
+      if(lat_str != prevPackage.lat || lng_str != prevPackage.lng || date_str != prevPackage.date || time_str != prevPackage.time ) {
+        sendUDP();
+        prevPackage.lat = lat_str;
+        prevPackage.lng = lng_str;
+        prevPackage.time = time_str;
+        prevPackage.date = date_str;
+      }
       delay(2000);
     }
   }
@@ -263,20 +279,20 @@ void sendGPSDataToWebserver() {
 }
 
 void sendUDP() {
-  String udp_packet = "";
-  //udp_packet += "Format: LAT;LNG;DATE(date.month.year);TIME(hour:minute:second)\n";
-  //udp_packet += IpAddress2String(WiFi.localIP());
-  //udp_packet += ";";
-  udp_packet += lat_str + ";";
-  udp_packet += lng_str + ";";
-  udp_packet += String(date) + String(".") + String(month)  + String(".") + String(year)   + String(";");
-  udp_packet += String(hour) + String(":") + String(minute) + String(":") + String(second) + String(";");
+  String udp_package = "";
+  //udp_package += "Format: LAT;LNG;DATE(date.month.year);TIME(hour:minute:second)\n";
+  //udp_package += IpAddress2String(WiFi.localIP());
+  //udp_package += ";";
+  udp_package += lat_str + ";";
+  udp_package += lng_str + ";";
+  udp_package += String(date) + String(".") + String(month)  + String(".") + String(year)   + String(";");
+  udp_package += String(hour) + String(":") + String(minute) + String(":") + String(second) + String(";");
   
-  Serial.println("UPD Packet");
-  Serial.println(udp_packet);
-  Serial.println("---------\n\n");
+  Serial.println("--------------------------------------------UPD Packet--------------------------------------------");
+  Serial.println(udp_package);
+  Serial.println("--------------------------------------------------------------------------------------------------\n\n");
 
   Udp.beginPacket(IPAddress(192, 168, 0, 104), 1722);
-  Udp.write(udp_packet.c_str());
+  Udp.write(udp_package.c_str());
   Udp.endPacket();
 }

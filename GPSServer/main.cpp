@@ -230,7 +230,7 @@ void recordDeviceActivity(int _packages) {
                         memset(buffer, 0, sizeof(buffer));
                     }
                     
-                    if(counterPackages + 1 >= _packages) {
+                    if(counterPackages + 1 >= _packages && _packages > 0) {
                         EXIT_SOCKET_LISTNER = true;
                         std::cout << CYAN << "All " << _packages << " package(s) received!" << RESET << std::endl;
                     }
@@ -263,19 +263,19 @@ void commandList() {
 
 void commandHelp() {
     std::cout << YELLOW << "GPS Tracker | Version " << VERSION << std::endl;
-    std::cout << "These shell commands are defined internaly." << std::endl;
+    std::cout << "These shell commands are defined internally." << std::endl;
     std::cout << "\nCONSOLE COMMANDS" << std::endl;
     std::cout << "Type `help` to see this list." << std::endl;
     std::cout << "Type `--v` or `--version` to see the version of the program." << std::endl;
     std::cout << "\nSCAN COMMANDS" << std::endl;
     std::cout << "Type `scan -devices` to inspect for devices." << std::endl;
-    std::cout << "Type `scan -device -[number] -[packages]` listen only the selected device." << std::endl;
+    std::cout << "Type `scan -device -[device number] -[packages]` to listen only to the selected device. (packages = 0 for endless)" << std::endl;
     std::cout << "\nSHOW COMMANDS" << std::endl;
     std::cout << "Type `show -list -devices` to list all found devices." << std::endl;
-    std::cout << "Type `show -list -packages` to see the temporare saved list with packages" << std::endl;
+    std::cout << "Type `show -list -packages` to see the temporary saved list with packages" << std::endl;
     std::cout << "\nSAVE & CREATE COMMANDS" << std::endl;
-    std::cout << "Type `save -list -n [name without extention]` save the temporare list" << std::endl;
-    std::cout << "Type `create -map -list [name without extention]` create web map with the temporare list data" << std::endl;
+    std::cout << "Type `save -list -n [name without extention]` to save the temporary list" << std::endl;
+    std::cout << "Type `create -map -list [name without extention]` to create a web map with the temporary list data" << std::endl;
     std::cout << "\nEXIT COMMANDS" << std::endl;
     std::cout << "Press Ctrl + `c` to kill a listner" << std::endl;
     std::cout << "Type `exit` or `quit` to exit the program" << RESET << std::endl << std::endl;
@@ -302,7 +302,7 @@ void* commandRecord(int _deviceNumber, int _packages) {
         std::cout << YELLOW << "Invalid device number" << RESET << std::endl;
         return NULL;
     }
-    if(_packages <= 0) {
+    if(_packages < 0) {
         std::cout << YELLOW << "Invalid package number" << RESET << std::endl;
         return NULL;
     }
@@ -433,11 +433,6 @@ int main(int argc, const char * argv[]) {
                     std::cout << RED << "Invalid options" << RESET << std::endl;
                 }
             }
-            /*try {
-             commandRecord(stoi(input.substr(input.find("-device -") + 9)));
-             } catch (const std::exception&) {
-             std::cout << RED << "Invalid device number" << RESET << std::endl;
-             }*/
         } else if(input == "show -list -devices") {
             commandList();
         } else if(input == "show -list -packages") {
