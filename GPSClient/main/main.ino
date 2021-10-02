@@ -23,8 +23,8 @@ TinyGPSPlus gps;
 SoftwareSerial ss(TXGPSPIN, RXGPSPIN);
 WiFiUDP Udp;
 
-const char *ssid = "40130-MS";
-const char *password = "zMX6kq?+b!4-i4r=3";
+const char *ssid = "..";
+const char *password = "..";
 
 WiFiServer server(80);
 
